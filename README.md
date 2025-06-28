@@ -1,6 +1,6 @@
 ## Project Illustration
 
-![Animated overview of FinancialNexus Agentic AI platform](Picture.png)
+![Animated overview of FinancialNexus Agentic AI platform](picture.png)
 
 ### **FinancialNexus_Agentic_AI**
 
