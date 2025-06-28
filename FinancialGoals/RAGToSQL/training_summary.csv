@@ -1,0 +1,410 @@
+,id,question,content,training_data_type
+0,5251ef09-9537-5802-a387-f0661ab2e5e2-ddl,,"CREATE TABLE [wealth-data].[dbo].[Clients] (
+    ClientID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL
+);",ddl
+1,172d833e-4dc2-5949-bb83-625c215487d3-ddl,,"CREATE TABLE [wealth-data].[dbo].[Assets] (
+    AssetID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL,
+    AssetType NVARCHAR(50) NOT NULL,
+    CurrentValue DECIMAL(18,2) NOT NULL
+);",ddl
+2,8c4708b0-4e75-5bd7-b170-adc1c0a9ff8f-ddl,,"CREATE TABLE [wealth-data].[dbo].[Portfolios] (
+    PortfolioID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL,
+    ClientID INT NOT NULL FOREIGN KEY REFERENCES [wealth-data].[dbo].[Clients](ClientID),
+    RiskLevel NVARCHAR(50) NOT NULL
+);",ddl
+3,d2d5670c-2b0e-54da-bbbe-b540b3bf5af0-ddl,,"CREATE TABLE [wealth-data].[dbo].[PortfolioAssets] (
+    PortfolioAssetID INT IDENTITY(1,1) PRIMARY KEY,
+    PortfolioID INT NOT NULL FOREIGN KEY REFERENCES [wealth-data].[dbo].[Portfolios](PortfolioID),
+    AssetID INT NOT NULL FOREIGN KEY REFERENCES [wealth-data].[dbo].[Assets](AssetID),
+    Allocation DECIMAL(5,2) NOT NULL CHECK (Allocation >= 0 AND Allocation <= 100)
+);",ddl
+4,8a7f4ba0-cf18-5c27-90c2-1360b3041133-ddl,,"CREATE TABLE [wealth-data].[dbo].[FinancialGoals] (
+    GoalID INT IDENTITY(1,1) PRIMARY KEY,
+    ClientID INT NOT NULL FOREIGN KEY REFERENCES [wealth-data].[dbo].[Clients](ClientID),
+    GoalDescription NVARCHAR(255) NOT NULL,
+    TargetAmount DECIMAL(18,2) NOT NULL,
+    TargetDate DATE NOT NULL
+);",ddl
+5,d632847a-999b-52da-8bec-d2cc3880e53a-ddl,,"CREATE TABLE [wealth-data].[dbo].[RiskAssessmentMetrics] (
+    MetricID INT IDENTITY(1,1) PRIMARY KEY,
+    AssetID INT NOT NULL FOREIGN KEY REFERENCES [wealth-data].[dbo].[Assets](AssetID),
+    MetricName NVARCHAR(50) NOT NULL,
+    Value DECIMAL(10,4) NOT NULL,
+    Timestamp DATETIME NOT NULL
+);",ddl
+6,12b0a1cf-5b25-5d68-b364-ab798aea6f4a-ddl,,"CREATE TABLE [wealth-data].[dbo].[RiskProfileMapping] (
+    MappingID INT IDENTITY(1,1) PRIMARY KEY,
+    RiskLevel NVARCHAR(50) NOT NULL,
+    AssetType NVARCHAR(50) NOT NULL,
+    RecommendedAllocation DECIMAL(5,2) NOT NULL CHECK (RecommendedAllocation >= 0 AND RecommendedAllocation <= 100)
+);",ddl
+7,31d0f724-eb44-5645-a2ec-e8b0a9ef6f37-ddl,,"CREATE TABLE [wealth-data].[dbo].[HistoricalProjections] (
+    ProjectionID INT IDENTITY(1,1) PRIMARY KEY,
+    PortfolioID INT NOT NULL FOREIGN KEY REFERENCES [wealth-data].[dbo].[Portfolios](PortfolioID),
+    Date DATE NOT NULL,
+    PredictedValue DECIMAL(18,2) NOT NULL,
+    ActualValue DECIMAL(18,2) NOT NULL
+);",ddl
+0,ec55e0fa-7416-501c-9e3f-8f1fc38d6726-doc,,"The following columns are in the sys_dw_manifest_files table in the wealth-data database:
+
+|    | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME            | COLUMN_NAME          | DATA_TYPE        |
+|---:|:----------------|:---------------|:----------------------|:---------------------|:-----------------|
+|  0 | wealth-data     | sys            | sys_dw_manifest_files | table_id             | int              |
+|  1 | wealth-data     | sys            | sys_dw_manifest_files | commit_sequence_id   | bigint           |
+|  2 | wealth-data     | sys            | sys_dw_manifest_files | file_id              | uniqueidentifier |
+|  3 | wealth-data     | sys            | sys_dw_manifest_files | xdes_ts              | bigint           |
+|  4 | wealth-data     | sys            | sys_dw_manifest_files | append_only          | bit              |
+|  5 | wealth-data     | sys            | sys_dw_manifest_files | rows_inserted        | bigint           |
+|  6 | wealth-data     | sys            | sys_dw_manifest_files | commit_timestamp     | datetime         |
+|  7 | wealth-data     | sys            | sys_dw_manifest_files | source_table_guid    | uniqueidentifier |
+|  8 | wealth-data     | sys            | sys_dw_manifest_files | manifest_file_name   | nvarchar         |
+|  9 | wealth-data     | sys            | sys_dw_manifest_files | physical_object_guid | uniqueidentifier |",documentation
+1,c84b44a2-277a-5720-a6f3-87f247a653e9-doc,,"The following columns are in the sys_dw_physical_table_forks table in the wealth-data database:
+
+|    | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME                  | COLUMN_NAME          | DATA_TYPE        |
+|---:|:----------------|:---------------|:----------------------------|:---------------------|:-----------------|
+| 10 | wealth-data     | sys            | sys_dw_physical_table_forks | commit_sequence_id   | bigint           |
+| 11 | wealth-data     | sys            | sys_dw_physical_table_forks | table_id             | int              |
+| 12 | wealth-data     | sys            | sys_dw_physical_table_forks | fork_guid            | uniqueidentifier |
+| 13 | wealth-data     | sys            | sys_dw_physical_table_forks | source_table_guid    | uniqueidentifier |
+| 14 | wealth-data     | sys            | sys_dw_physical_table_forks | source_database_guid | uniqueidentifier |
+| 15 | wealth-data     | sys            | sys_dw_physical_table_forks | xdes_ts              | bigint           |
+| 16 | wealth-data     | sys            | sys_dw_physical_table_forks | commit_timestamp     | datetime         |
+| 17 | wealth-data     | sys            | sys_dw_physical_table_forks | physical_object_guid | uniqueidentifier |
+| 18 | wealth-data     | sys            | sys_dw_physical_table_forks | folder_name          | nvarchar         |",documentation
+2,78df9b11-0945-522b-861b-68332f58f2a3-doc,,"The following columns are in the sys_dw_physical_tables table in the wealth-data database:
+
+|    | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME             | COLUMN_NAME             | DATA_TYPE        |
+|---:|:----------------|:---------------|:-----------------------|:------------------------|:-----------------|
+| 19 | wealth-data     | sys            | sys_dw_physical_tables | object_id               | int              |
+| 20 | wealth-data     | sys            | sys_dw_physical_tables | physical_object_guid    | uniqueidentifier |
+| 21 | wealth-data     | sys            | sys_dw_physical_tables | fork_guid               | uniqueidentifier |
+| 22 | wealth-data     | sys            | sys_dw_physical_tables | clone_scratch_guid      | uniqueidentifier |
+| 23 | wealth-data     | sys            | sys_dw_physical_tables | manifest_feature_status | int              |
+| 24 | wealth-data     | sys            | sys_dw_physical_tables | manifest_root           | nvarchar         |",documentation
+3,a28d4eb9-c9e4-5d24-996a-5f9aea390650-doc,,"The following columns are in the sys_dw_checkpoint_files table in the wealth-data database:
+
+|    | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME              | COLUMN_NAME          | DATA_TYPE        |
+|---:|:----------------|:---------------|:------------------------|:---------------------|:-----------------|
+| 25 | wealth-data     | sys            | sys_dw_checkpoint_files | table_id             | int              |
+| 26 | wealth-data     | sys            | sys_dw_checkpoint_files | commit_sequence_id   | bigint           |
+| 27 | wealth-data     | sys            | sys_dw_checkpoint_files | part                 | int              |
+| 28 | wealth-data     | sys            | sys_dw_checkpoint_files | file_id              | uniqueidentifier |
+| 29 | wealth-data     | sys            | sys_dw_checkpoint_files | version              | bigint           |
+| 30 | wealth-data     | sys            | sys_dw_checkpoint_files | source_table_guid    | uniqueidentifier |
+| 31 | wealth-data     | sys            | sys_dw_checkpoint_files | physical_object_guid | uniqueidentifier |
+| 32 | wealth-data     | sys            | sys_dw_checkpoint_files | checkpoint_file_name | nvarchar         |",documentation
+4,4b3e27ec-0fc2-58af-9414-f668f76f65f0-doc,,"The following columns are in the managed_delta_table_log_files table in the wealth-data database:
+
+|    | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME                    | COLUMN_NAME        | DATA_TYPE        |
+|---:|:----------------|:---------------|:------------------------------|:-------------------|:-----------------|
+| 33 | wealth-data     | sys            | managed_delta_table_log_files | commit_sequence_id | bigint           |
+| 34 | wealth-data     | sys            | managed_delta_table_log_files | file_guid          | uniqueidentifier |
+| 35 | wealth-data     | sys            | managed_delta_table_log_files | xdes_ts            | bigint           |
+| 36 | wealth-data     | sys            | managed_delta_table_log_files | append_only        | bit              |
+| 37 | wealth-data     | sys            | managed_delta_table_log_files | rows_inserted      | bigint           |
+| 38 | wealth-data     | sys            | managed_delta_table_log_files | commit_time        | datetime         |
+| 39 | wealth-data     | sys            | managed_delta_table_log_files | source_table_guid  | uniqueidentifier |
+| 40 | wealth-data     | sys            | managed_delta_table_log_files | manifest_file_name | nvarchar         |
+| 41 | wealth-data     | sys            | managed_delta_table_log_files | table_guid         | uniqueidentifier |",documentation
+5,fc872fcb-6167-58b2-ab9e-8973fe553ebb-doc,,"The following columns are in the managed_delta_table_forks table in the wealth-data database:
+
+|    | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME                | COLUMN_NAME          | DATA_TYPE        |
+|---:|:----------------|:---------------|:--------------------------|:---------------------|:-----------------|
+| 42 | wealth-data     | sys            | managed_delta_table_forks | commit_sequence_id   | bigint           |
+| 43 | wealth-data     | sys            | managed_delta_table_forks | fork_guid            | uniqueidentifier |
+| 44 | wealth-data     | sys            | managed_delta_table_forks | source_table_guid    | uniqueidentifier |
+| 45 | wealth-data     | sys            | managed_delta_table_forks | source_database_guid | uniqueidentifier |
+| 46 | wealth-data     | sys            | managed_delta_table_forks | xdes_ts              | bigint           |
+| 47 | wealth-data     | sys            | managed_delta_table_forks | commit_time          | datetime         |
+| 48 | wealth-data     | sys            | managed_delta_table_forks | table_guid           | uniqueidentifier |
+| 49 | wealth-data     | sys            | managed_delta_table_forks | folder_name          | nvarchar         |",documentation
+6,15253e75-ef1c-53e0-a223-3e4a1f857532-doc,,"The following columns are in the managed_delta_tables table in the wealth-data database:
+
+|    | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME           | COLUMN_NAME              | DATA_TYPE        |
+|---:|:----------------|:---------------|:---------------------|:-------------------------|:-----------------|
+| 50 | wealth-data     | sys            | managed_delta_tables | table_id                 | bigint           |
+| 51 | wealth-data     | sys            | managed_delta_tables | table_guid               | uniqueidentifier |
+| 52 | wealth-data     | sys            | managed_delta_tables | fork_guid                | uniqueidentifier |
+| 53 | wealth-data     | sys            | managed_delta_tables | delta_log_feature_status | int              |
+| 54 | wealth-data     | sys            | managed_delta_tables | manifest_root            | nvarchar         |
+| 55 | wealth-data     | sys            | managed_delta_tables | drop_commit_time         | datetime         |
+| 56 | wealth-data     | sys            | managed_delta_tables | object_id                | int              |
+| 57 | wealth-data     | sys            | managed_delta_tables | table_classification     | tinyint          |",documentation
+7,801cc7e5-f22d-5d95-8f94-5dbff6c0edb6-doc,,"The following columns are in the managed_delta_table_checkpoints table in the wealth-data database:
+
+|    | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME                      | COLUMN_NAME                  | DATA_TYPE        |
+|---:|:----------------|:---------------|:--------------------------------|:-----------------------------|:-----------------|
+| 58 | wealth-data     | sys            | managed_delta_table_checkpoints | delta_log_commit_sequence_id | bigint           |
+| 59 | wealth-data     | sys            | managed_delta_table_checkpoints | part                         | int              |
+| 60 | wealth-data     | sys            | managed_delta_table_checkpoints | file_guid                    | uniqueidentifier |
+| 61 | wealth-data     | sys            | managed_delta_table_checkpoints | version                      | bigint           |
+| 62 | wealth-data     | sys            | managed_delta_table_checkpoints | source_table_guid            | uniqueidentifier |
+| 63 | wealth-data     | sys            | managed_delta_table_checkpoints | table_guid                   | uniqueidentifier |
+| 64 | wealth-data     | sys            | managed_delta_table_checkpoints | checkpoint_file_name         | nvarchar         |",documentation
+8,0dfd024d-3648-51de-b5ec-454fb436ed12-doc,,"The following columns are in the sys_dw_schemas table in the wealth-data database:
+
+|    | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME     | COLUMN_NAME   | DATA_TYPE   |
+|---:|:----------------|:---------------|:---------------|:--------------|:------------|
+| 65 | wealth-data     | sys            | sys_dw_schemas | name          | nvarchar    |
+| 66 | wealth-data     | sys            | sys_dw_schemas | schema_id     | int         |
+| 67 | wealth-data     | sys            | sys_dw_schemas | principal_id  | int         |
+| 68 | wealth-data     | sys            | sys_dw_schemas | is_internal   | bit         |",documentation
+9,df2caa48-e852-5dda-8610-19a5e6291c46-doc,,"The following columns are in the exec_requests_history table in the wealth-data database:
+
+|    | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME            | COLUMN_NAME                    | DATA_TYPE        |
+|---:|:----------------|:---------------|:----------------------|:-------------------------------|:-----------------|
+| 69 | wealth-data     | queryinsights  | exec_requests_history | distributed_statement_id       | uniqueidentifier |
+| 70 | wealth-data     | queryinsights  | exec_requests_history | submit_time                    | datetime2        |
+| 71 | wealth-data     | queryinsights  | exec_requests_history | start_time                     | datetime2        |
+| 72 | wealth-data     | queryinsights  | exec_requests_history | end_time                       | datetime2        |
+| 73 | wealth-data     | queryinsights  | exec_requests_history | total_elapsed_time_ms          | int              |
+| 74 | wealth-data     | queryinsights  | exec_requests_history | login_name                     | varchar          |
+| 75 | wealth-data     | queryinsights  | exec_requests_history | row_count                      | bigint           |
+| 76 | wealth-data     | queryinsights  | exec_requests_history | status                         | varchar          |
+| 77 | wealth-data     | queryinsights  | exec_requests_history | session_id                     | int              |
+| 78 | wealth-data     | queryinsights  | exec_requests_history | connection_id                  | uniqueidentifier |
+| 79 | wealth-data     | queryinsights  | exec_requests_history | program_name                   | varchar          |
+| 80 | wealth-data     | queryinsights  | exec_requests_history | batch_id                       | uniqueidentifier |
+| 81 | wealth-data     | queryinsights  | exec_requests_history | root_batch_id                  | uniqueidentifier |
+| 82 | wealth-data     | queryinsights  | exec_requests_history | query_hash                     | varchar          |
+| 83 | wealth-data     | queryinsights  | exec_requests_history | label                          | varchar          |
+| 84 | wealth-data     | queryinsights  | exec_requests_history | result_cache_hit               | int              |
+| 85 | wealth-data     | queryinsights  | exec_requests_history | allocated_cpu_time_ms          | bigint           |
+| 86 | wealth-data     | queryinsights  | exec_requests_history | data_scanned_remote_storage_mb | decimal          |
+| 87 | wealth-data     | queryinsights  | exec_requests_history | data_scanned_memory_mb         | decimal          |
+| 88 | wealth-data     | queryinsights  | exec_requests_history | data_scanned_disk_mb           | decimal          |
+| 89 | wealth-data     | queryinsights  | exec_requests_history | command                        | varchar          |",documentation
+10,c31cb7a4-dbd4-5784-a50f-9a8a7d380ec5-doc,,"The following columns are in the long_running_queries table in the wealth-data database:
+
+|    | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME           | COLUMN_NAME                    | DATA_TYPE        |
+|---:|:----------------|:---------------|:---------------------|:-------------------------------|:-----------------|
+| 90 | wealth-data     | queryinsights  | long_running_queries | median_total_elapsed_time_ms   | float            |
+| 91 | wealth-data     | queryinsights  | long_running_queries | last_run_total_elapsed_time_ms | int              |
+| 92 | wealth-data     | queryinsights  | long_running_queries | last_run_start_time            | datetime2        |
+| 93 | wealth-data     | queryinsights  | long_running_queries | last_dist_statement_id         | uniqueidentifier |
+| 94 | wealth-data     | queryinsights  | long_running_queries | last_run_session_id            | int              |
+| 95 | wealth-data     | queryinsights  | long_running_queries | number_of_runs                 | int              |
+| 96 | wealth-data     | queryinsights  | long_running_queries | query_hash                     | varchar          |
+| 97 | wealth-data     | queryinsights  | long_running_queries | last_run_command               | varchar          |",documentation
+11,b2e680f0-bf74-5527-adf1-cedbb4fb2f3b-doc,,"The following columns are in the frequently_run_queries table in the wealth-data database:
+
+|     | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME             | COLUMN_NAME                    | DATA_TYPE        |
+|----:|:----------------|:---------------|:-----------------------|:-------------------------------|:-----------------|
+|  98 | wealth-data     | queryinsights  | frequently_run_queries | number_of_runs                 | int              |
+|  99 | wealth-data     | queryinsights  | frequently_run_queries | min_run_total_elapsed_time_ms  | int              |
+| 100 | wealth-data     | queryinsights  | frequently_run_queries | max_run_total_elapsed_time_ms  | int              |
+| 101 | wealth-data     | queryinsights  | frequently_run_queries | avg_total_elapsed_time_ms      | int              |
+| 102 | wealth-data     | queryinsights  | frequently_run_queries | number_of_successful_runs      | int              |
+| 103 | wealth-data     | queryinsights  | frequently_run_queries | number_of_failed_runs          | int              |
+| 104 | wealth-data     | queryinsights  | frequently_run_queries | number_of_canceled_runs        | int              |
+| 105 | wealth-data     | queryinsights  | frequently_run_queries | last_run_total_elapsed_time_ms | int              |
+| 106 | wealth-data     | queryinsights  | frequently_run_queries | last_run_start_time            | datetime2        |
+| 107 | wealth-data     | queryinsights  | frequently_run_queries | last_dist_statement_id         | uniqueidentifier |
+| 108 | wealth-data     | queryinsights  | frequently_run_queries | query_hash                     | varchar          |
+| 109 | wealth-data     | queryinsights  | frequently_run_queries | last_run_command               | varchar          |",documentation
+12,86a23205-6514-5331-a0bd-39229bfa99f5-doc,,"The following columns are in the exec_sessions_history table in the wealth-data database:
+
+|     | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME            | COLUMN_NAME                 | DATA_TYPE        |
+|----:|:----------------|:---------------|:----------------------|:----------------------------|:-----------------|
+| 110 | wealth-data     | queryinsights  | exec_sessions_history | session_id                  | int              |
+| 111 | wealth-data     | queryinsights  | exec_sessions_history | connection_id               | uniqueidentifier |
+| 112 | wealth-data     | queryinsights  | exec_sessions_history | session_start_time          | datetime2        |
+| 113 | wealth-data     | queryinsights  | exec_sessions_history | session_end_time            | datetime2        |
+| 114 | wealth-data     | queryinsights  | exec_sessions_history | program_name                | varchar          |
+| 115 | wealth-data     | queryinsights  | exec_sessions_history | login_name                  | varchar          |
+| 116 | wealth-data     | queryinsights  | exec_sessions_history | status                      | varchar          |
+| 117 | wealth-data     | queryinsights  | exec_sessions_history | context_info                | varchar          |
+| 118 | wealth-data     | queryinsights  | exec_sessions_history | total_query_elapsed_time_ms | bigint           |
+| 119 | wealth-data     | queryinsights  | exec_sessions_history | last_request_start_time     | datetime2        |
+| 120 | wealth-data     | queryinsights  | exec_sessions_history | last_request_end_time       | datetime2        |
+| 121 | wealth-data     | queryinsights  | exec_sessions_history | is_user_process             | bit              |
+| 122 | wealth-data     | queryinsights  | exec_sessions_history | prev_error                  | int              |
+| 123 | wealth-data     | queryinsights  | exec_sessions_history | group_id                    | bigint           |
+| 124 | wealth-data     | queryinsights  | exec_sessions_history | database_id                 | int              |
+| 125 | wealth-data     | queryinsights  | exec_sessions_history | authenticating_database_id  | int              |
+| 126 | wealth-data     | queryinsights  | exec_sessions_history | open_transaction_count      | bigint           |
+| 127 | wealth-data     | queryinsights  | exec_sessions_history | text_size                   | int              |
+| 128 | wealth-data     | queryinsights  | exec_sessions_history | language                    | varchar          |
+| 129 | wealth-data     | queryinsights  | exec_sessions_history | date_format                 | varchar          |
+| 130 | wealth-data     | queryinsights  | exec_sessions_history | date_first                  | int              |
+| 131 | wealth-data     | queryinsights  | exec_sessions_history | quoted_identifier           | bit              |
+| 132 | wealth-data     | queryinsights  | exec_sessions_history | arithabort                  | bit              |
+| 133 | wealth-data     | queryinsights  | exec_sessions_history | ansi_null_dflt_on           | bit              |
+| 134 | wealth-data     | queryinsights  | exec_sessions_history | ansi_defaults               | bit              |
+| 135 | wealth-data     | queryinsights  | exec_sessions_history | ansi_warnings               | bit              |
+| 136 | wealth-data     | queryinsights  | exec_sessions_history | ansi_padding                | bit              |
+| 137 | wealth-data     | queryinsights  | exec_sessions_history | ansi_nulls                  | bit              |
+| 138 | wealth-data     | queryinsights  | exec_sessions_history | concat_null_yields_null     | bit              |
+| 139 | wealth-data     | queryinsights  | exec_sessions_history | transaction_isolation_level | int              |
+| 140 | wealth-data     | queryinsights  | exec_sessions_history | lock_timeout                | bigint           |
+| 141 | wealth-data     | queryinsights  | exec_sessions_history | deadlock_priority           | int              |
+| 142 | wealth-data     | queryinsights  | exec_sessions_history | original_security_id        | varchar          |
+| 143 | wealth-data     | queryinsights  | exec_sessions_history | database_name               | varchar          |",documentation
+13,95cee34d-8076-593e-8dad-b20368828cfc-doc,,"The following columns are in the PortfolioAssets table in the wealth-data database:
+
+|     | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME      | COLUMN_NAME      | DATA_TYPE   |
+|----:|:----------------|:---------------|:----------------|:-----------------|:------------|
+| 144 | wealth-data     | dbo            | PortfolioAssets | PortfolioAssetID | int         |
+| 145 | wealth-data     | dbo            | PortfolioAssets | PortfolioID      | int         |
+| 146 | wealth-data     | dbo            | PortfolioAssets | AssetID          | int         |
+| 147 | wealth-data     | dbo            | PortfolioAssets | Allocation       | decimal     |",documentation
+14,0acb9434-8c8c-5894-91eb-a7dec5f00475-doc,,"The following columns are in the HistoricalProjections table in the wealth-data database:
+
+|     | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME            | COLUMN_NAME    | DATA_TYPE   |
+|----:|:----------------|:---------------|:----------------------|:---------------|:------------|
+| 148 | wealth-data     | dbo            | HistoricalProjections | ProjectionID   | int         |
+| 149 | wealth-data     | dbo            | HistoricalProjections | PortfolioID    | int         |
+| 150 | wealth-data     | dbo            | HistoricalProjections | Date           | date        |
+| 151 | wealth-data     | dbo            | HistoricalProjections | PredictedValue | decimal     |
+| 152 | wealth-data     | dbo            | HistoricalProjections | ActualValue    | decimal     |",documentation
+15,71927e28-c6a2-5877-b2b4-a6c4c8242a74-doc,,"The following columns are in the RiskProfileMapping table in the wealth-data database:
+
+|     | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME         | COLUMN_NAME           | DATA_TYPE   |
+|----:|:----------------|:---------------|:-------------------|:----------------------|:------------|
+| 153 | wealth-data     | dbo            | RiskProfileMapping | MappingID             | int         |
+| 154 | wealth-data     | dbo            | RiskProfileMapping | RiskLevel             | varchar     |
+| 155 | wealth-data     | dbo            | RiskProfileMapping | AssetType             | varchar     |
+| 156 | wealth-data     | dbo            | RiskProfileMapping | RecommendedAllocation | decimal     |",documentation
+16,2c2bae87-4a07-5a73-a332-d885737986b1-doc,,"The following columns are in the Assets table in the wealth-data database:
+
+|     | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME   | COLUMN_NAME   | DATA_TYPE   |
+|----:|:----------------|:---------------|:-------------|:--------------|:------------|
+| 157 | wealth-data     | dbo            | Assets       | AssetID       | int         |
+| 158 | wealth-data     | dbo            | Assets       | Name          | varchar     |
+| 159 | wealth-data     | dbo            | Assets       | AssetType     | varchar     |
+| 160 | wealth-data     | dbo            | Assets       | CurrentValue  | decimal     |",documentation
+17,514cfe75-c860-5f78-ae6c-777e1258a2cd-doc,,"The following columns are in the RiskAssessmentMetrics table in the wealth-data database:
+
+|     | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME            | COLUMN_NAME   | DATA_TYPE   |
+|----:|:----------------|:---------------|:----------------------|:--------------|:------------|
+| 161 | wealth-data     | dbo            | RiskAssessmentMetrics | MetricID      | int         |
+| 162 | wealth-data     | dbo            | RiskAssessmentMetrics | AssetID       | int         |
+| 163 | wealth-data     | dbo            | RiskAssessmentMetrics | MetricName    | varchar     |
+| 164 | wealth-data     | dbo            | RiskAssessmentMetrics | Value         | decimal     |
+| 165 | wealth-data     | dbo            | RiskAssessmentMetrics | Timestamp     | datetime2   |",documentation
+18,00495708-4b7d-51f9-8461-11151b58e30b-doc,,"The following columns are in the Clients table in the wealth-data database:
+
+|     | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME   | COLUMN_NAME   | DATA_TYPE   |
+|----:|:----------------|:---------------|:-------------|:--------------|:------------|
+| 166 | wealth-data     | dbo            | Clients      | ClientID      | int         |
+| 167 | wealth-data     | dbo            | Clients      | Name          | varchar     |",documentation
+19,982e3889-162c-5246-86bc-1d0a95745a45-doc,,"The following columns are in the Portfolios table in the wealth-data database:
+
+|     | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME   | COLUMN_NAME   | DATA_TYPE   |
+|----:|:----------------|:---------------|:-------------|:--------------|:------------|
+| 168 | wealth-data     | dbo            | Portfolios   | PortfolioID   | int         |
+| 169 | wealth-data     | dbo            | Portfolios   | Name          | varchar     |
+| 170 | wealth-data     | dbo            | Portfolios   | ClientID      | int         |
+| 171 | wealth-data     | dbo            | Portfolios   | RiskLevel     | varchar     |",documentation
+20,0a375f83-14de-53b2-9f1b-35cee1a33e06-doc,,"The following columns are in the FinancialGoals table in the wealth-data database:
+
+|     | TABLE_CATALOG   | TABLE_SCHEMA   | TABLE_NAME     | COLUMN_NAME     | DATA_TYPE   |
+|----:|:----------------|:---------------|:---------------|:----------------|:------------|
+| 172 | wealth-data     | dbo            | FinancialGoals | GoalID          | int         |
+| 173 | wealth-data     | dbo            | FinancialGoals | ClientID        | int         |
+| 174 | wealth-data     | dbo            | FinancialGoals | GoalDescription | varchar     |
+| 175 | wealth-data     | dbo            | FinancialGoals | TargetAmount    | decimal     |
+| 176 | wealth-data     | dbo            | FinancialGoals | TargetDate      | date        |",documentation
+21,3bb9e4a1-12b2-5bf2-911d-b4c029fd2299-doc,,"Database Overview: Asset Management and Financial Planning
+The Asset Management and Financial Planning database is designed to support a Generative AI-powered financial planning and risk assessment assistant. The database structure aims to store, analyze, and manage financial information for clients, including their portfolios, assets, financial goals, risk metrics, and historical projections. Below is a detailed explanation of the tables, their purposes, and key relationships.
+
+Tables and Their Purposes:
+[wealth-data].[dbo].[Clients]
+
+Purpose: Stores information about individual clients using the financial planning assistant.
+Key Columns:
+ClientID: Unique identifier for each client.
+Name: Full name of the client.
+
+[wealth-data].[dbo].[Assets]
+
+Purpose: Maintains data about various financial assets available for investment or allocation.
+Key Columns:
+AssetID: Unique identifier for each asset.
+Name: Name of the asset (e.g., ""Stock A"", ""Bond B"").
+AssetType: Type of asset (e.g., Equity, Fixed Income, Real Estate).
+CurrentValue: Current monetary value of the asset.
+
+[wealth-data].[dbo].[Portfolios]
+
+Purpose: Captures the portfolios created for clients to allocate their investments based on risk and goals.
+Key Columns:
+PortfolioID: Unique identifier for each portfolio.
+Name: Name of the portfolio (e.g., ""Retirement Fund"").
+ClientID: Links the portfolio to a specific client.
+RiskLevel: Risk level of the portfolio (e.g., Low, Moderate, High).
+
+[wealth-data].[dbo].[PortfolioAssets]
+
+Purpose: Defines the assets allocated to each portfolio and their respective allocations.
+Key Columns:
+PortfolioAssetID: Unique identifier for each portfolio-asset relationship.
+PortfolioID: Links the asset allocation to a specific portfolio.
+AssetID: Links the allocation to a specific asset.
+Allocation: Percentage of the portfolio allocated to the asset (0–100).
+
+[wealth-data].[dbo].[FinancialGoals]
+
+Purpose: Tracks financial goals for each client to assist in personalized planning.
+Key Columns:
+GoalID: Unique identifier for each financial goal.
+ClientID: Links the goal to a specific client.
+GoalDescription: Description of the financial goal (e.g., ""Buy a house"", ""Save for retirement"").
+TargetAmount: Financial target amount to achieve the goal.
+TargetDate: Deadline for achieving the goal.
+
+[wealth-data].[dbo].[RiskAssessmentMetrics]
+
+Purpose: Stores risk-related metrics for assets to evaluate their suitability for portfolios.
+Key Columns:
+MetricID: Unique identifier for each metric.
+AssetID: Links the metric to a specific asset.
+MetricName: Name of the metric (e.g., ""Volatility"", ""Beta"").
+Value: Quantitative value of the metric.
+Timestamp: Date and time when the metric was recorded.
+
+[wealth-data].[dbo].[RiskProfileMapping]
+
+Purpose: Provides recommended asset allocation guidelines based on risk levels and asset types.
+Key Columns:
+MappingID: Unique identifier for each mapping.
+RiskLevel: Risk level (e.g., Low, Moderate, High).
+AssetType: Type of asset (e.g., Equity, Fixed Income).
+RecommendedAllocation: Suggested percentage allocation for the asset type (0–100).
+
+[wealth-data].[dbo].[HistoricalProjections]
+
+Purpose: Tracks the predicted and actual performance of portfolios over time.
+Key Columns:
+ProjectionID: Unique identifier for each projection.
+PortfolioID: Links the projection to a specific portfolio.
+Date: Date of the projection.
+PredictedValue: Predicted monetary value of the portfolio on the given date.
+ActualValue: Actual monetary value of the portfolio on the given date.
+
+
+Key Relationships:
+
+[wealth-data].[dbo].[Clients] ↔ [wealth-data].[dbo].[Portfolios]: Each client can have multiple portfolios. This is established through the ClientID foreign key in the [wealth-data].[dbo].[Portfolios] table.
+[wealth-data].[dbo].[Portfolios] ↔ [wealth-data].[dbo].[PortfolioAssets]: Each portfolio can allocate its investments across multiple assets. This is linked through the PortfolioID foreign key in [wealth-data].[dbo].[PortfolioAssets].
+[wealth-data].[dbo].[Assets] ↔ [wealth-data].[dbo].[PortfolioAssets]: Each asset can be part of multiple portfolios, linked via the AssetID foreign key.
+[wealth-data].[dbo].[FinancialGoals] ↔ [wealth-data].[dbo].[Clients]: Each financial goal belongs to a specific client, linked via the ClientID foreign key.
+[wealth-data].[dbo].[RiskAssessmentMetrics] ↔ [wealth-data].[dbo].[Assets]: Risk metrics are calculated for individual assets, linked via the AssetID foreign key.
+[wealth-data].[dbo].[HistoricalProjections] ↔ [wealth-data].[dbo].[Portfolios]: Historical projections are stored for each portfolio, linked via the PortfolioID foreign key.
+
+Purpose of the Database:
+The database is designed to:
+
+Support Personalized Financial Planning:
+Define client-specific financial goals.
+Create portfolios tailored to risk levels and financial objectives.
+Perform Risk Assessments:
+Use risk metrics to evaluate asset performance and portfolio suitability.
+Track Historical Performance:
+Store and compare predicted vs. actual portfolio values for analytics.
+Provide AI-Driven Insights:
+Enable integration with Generative AI models for data-driven financial recommendations.",documentation

@@ -1,0 +1,26 @@
+[
+        {
+            "query": "CREATE TABLE [wealth-data].[dbo].[Clients] (\n    ClientID INT IDENTITY(1,1) PRIMARY KEY,\n    Name NVARCHAR(255) NOT NULL\n);"
+        },
+        {
+            "query": "CREATE TABLE [wealth-data].[dbo].[Assets] (\n    AssetID INT IDENTITY(1,1) PRIMARY KEY,\n    Name NVARCHAR(255) NOT NULL,\n    AssetType NVARCHAR(50) NOT NULL,\n    CurrentValue DECIMAL(18,2) NOT NULL\n);"
+        },
+        {
+            "query": "CREATE TABLE [wealth-data].[dbo].[Portfolios] (\n    PortfolioID INT IDENTITY(1,1) PRIMARY KEY,\n    Name NVARCHAR(255) NOT NULL,\n    ClientID INT NOT NULL FOREIGN KEY REFERENCES [wealth-data].[dbo].[Clients](ClientID),\n    RiskLevel NVARCHAR(50) NOT NULL\n);"
+        },
+        {
+            "query": "CREATE TABLE [wealth-data].[dbo].[PortfolioAssets] (\n    PortfolioAssetID INT IDENTITY(1,1) PRIMARY KEY,\n    PortfolioID INT NOT NULL FOREIGN KEY REFERENCES [wealth-data].[dbo].[Portfolios](PortfolioID),\n    AssetID INT NOT NULL FOREIGN KEY REFERENCES [wealth-data].[dbo].[Assets](AssetID),\n    Allocation DECIMAL(5,2) NOT NULL CHECK (Allocation >= 0 AND Allocation <= 100)\n);"
+        },
+        {
+            "query": "CREATE TABLE [wealth-data].[dbo].[FinancialGoals] (\n    GoalID INT IDENTITY(1,1) PRIMARY KEY,\n    ClientID INT NOT NULL FOREIGN KEY REFERENCES [wealth-data].[dbo].[Clients](ClientID),\n    GoalDescription NVARCHAR(255) NOT NULL,\n    TargetAmount DECIMAL(18,2) NOT NULL,\n    TargetDate DATE NOT NULL\n);"
+        },
+        {
+            "query": "CREATE TABLE [wealth-data].[dbo].[RiskAssessmentMetrics] (\n    MetricID INT IDENTITY(1,1) PRIMARY KEY,\n    AssetID INT NOT NULL FOREIGN KEY REFERENCES [wealth-data].[dbo].[Assets](AssetID),\n    MetricName NVARCHAR(50) NOT NULL,\n    Value DECIMAL(10,4) NOT NULL,\n    Timestamp DATETIME NOT NULL\n);"
+        },
+        {
+            "query": "CREATE TABLE [wealth-data].[dbo].[RiskProfileMapping] (\n    MappingID INT IDENTITY(1,1) PRIMARY KEY,\n    RiskLevel NVARCHAR(50) NOT NULL,\n    AssetType NVARCHAR(50) NOT NULL,\n    RecommendedAllocation DECIMAL(5,2) NOT NULL CHECK (RecommendedAllocation >= 0 AND RecommendedAllocation <= 100)\n);"
+        },
+        {
+            "query": "CREATE TABLE [wealth-data].[dbo].[HistoricalProjections] (\n    ProjectionID INT IDENTITY(1,1) PRIMARY KEY,\n    PortfolioID INT NOT NULL FOREIGN KEY REFERENCES [wealth-data].[dbo].[Portfolios](PortfolioID),\n    Date DATE NOT NULL,\n    PredictedValue DECIMAL(18,2) NOT NULL,\n    ActualValue DECIMAL(18,2) NOT NULL\n);"
+        }
+    ]

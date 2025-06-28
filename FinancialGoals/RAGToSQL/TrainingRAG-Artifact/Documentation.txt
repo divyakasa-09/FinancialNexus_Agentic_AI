@@ -1,0 +1,99 @@
+Database Overview: Asset Management and Financial Planning
+The Asset Management and Financial Planning database is designed to support a Generative AI-powered financial planning and risk assessment assistant. The database structure aims to store, analyze, and manage financial information for clients, including their portfolios, assets, financial goals, risk metrics, and historical projections. Below is a detailed explanation of the tables, their purposes, and key relationships.
+
+Tables and Their Purposes:
+[wealth-data].[dbo].[Clients]
+
+Purpose: Stores information about individual clients using the financial planning assistant.
+Key Columns:
+ClientID: Unique identifier for each client.
+Name: Full name of the client.
+
+[wealth-data].[dbo].[Assets]
+
+Purpose: Maintains data about various financial assets available for investment or allocation.
+Key Columns:
+AssetID: Unique identifier for each asset.
+Name: Name of the asset (e.g., "Stock A", "Bond B").
+AssetType: Type of asset (e.g., Equity, Fixed Income, Real Estate).
+CurrentValue: Current monetary value of the asset.
+
+[wealth-data].[dbo].[Portfolios]
+
+Purpose: Captures the portfolios created for clients to allocate their investments based on risk and goals.
+Key Columns:
+PortfolioID: Unique identifier for each portfolio.
+Name: Name of the portfolio (e.g., "Retirement Fund").
+ClientID: Links the portfolio to a specific client.
+RiskLevel: Risk level of the portfolio (e.g., Low, Moderate, High).
+
+[wealth-data].[dbo].[PortfolioAssets]
+
+Purpose: Defines the assets allocated to each portfolio and their respective allocations.
+Key Columns:
+PortfolioAssetID: Unique identifier for each portfolio-asset relationship.
+PortfolioID: Links the asset allocation to a specific portfolio.
+AssetID: Links the allocation to a specific asset.
+Allocation: Percentage of the portfolio allocated to the asset (0–100).
+
+[wealth-data].[dbo].[FinancialGoals]
+
+Purpose: Tracks financial goals for each client to assist in personalized planning.
+Key Columns:
+GoalID: Unique identifier for each financial goal.
+ClientID: Links the goal to a specific client.
+GoalDescription: Description of the financial goal (e.g., "Buy a house", "Save for retirement").
+TargetAmount: Financial target amount to achieve the goal.
+TargetDate: Deadline for achieving the goal.
+
+[wealth-data].[dbo].[RiskAssessmentMetrics]
+
+Purpose: Stores risk-related metrics for assets to evaluate their suitability for portfolios.
+Key Columns:
+MetricID: Unique identifier for each metric.
+AssetID: Links the metric to a specific asset.
+MetricName: Name of the metric (e.g., "Volatility", "Beta").
+Value: Quantitative value of the metric.
+Timestamp: Date and time when the metric was recorded.
+
+[wealth-data].[dbo].[RiskProfileMapping]
+
+Purpose: Provides recommended asset allocation guidelines based on risk levels and asset types.
+Key Columns:
+MappingID: Unique identifier for each mapping.
+RiskLevel: Risk level (e.g., Low, Moderate, High).
+AssetType: Type of asset (e.g., Equity, Fixed Income).
+RecommendedAllocation: Suggested percentage allocation for the asset type (0–100).
+
+[wealth-data].[dbo].[HistoricalProjections]
+
+Purpose: Tracks the predicted and actual performance of portfolios over time.
+Key Columns:
+ProjectionID: Unique identifier for each projection.
+PortfolioID: Links the projection to a specific portfolio.
+Date: Date of the projection.
+PredictedValue: Predicted monetary value of the portfolio on the given date.
+ActualValue: Actual monetary value of the portfolio on the given date.
+
+
+Key Relationships:
+
+[wealth-data].[dbo].[Clients] ↔ [wealth-data].[dbo].[Portfolios]: Each client can have multiple portfolios. This is established through the ClientID foreign key in the [wealth-data].[dbo].[Portfolios] table.
+[wealth-data].[dbo].[Portfolios] ↔ [wealth-data].[dbo].[PortfolioAssets]: Each portfolio can allocate its investments across multiple assets. This is linked through the PortfolioID foreign key in [wealth-data].[dbo].[PortfolioAssets].
+[wealth-data].[dbo].[Assets] ↔ [wealth-data].[dbo].[PortfolioAssets]: Each asset can be part of multiple portfolios, linked via the AssetID foreign key.
+[wealth-data].[dbo].[FinancialGoals] ↔ [wealth-data].[dbo].[Clients]: Each financial goal belongs to a specific client, linked via the ClientID foreign key.
+[wealth-data].[dbo].[RiskAssessmentMetrics] ↔ [wealth-data].[dbo].[Assets]: Risk metrics are calculated for individual assets, linked via the AssetID foreign key.
+[wealth-data].[dbo].[HistoricalProjections] ↔ [wealth-data].[dbo].[Portfolios]: Historical projections are stored for each portfolio, linked via the PortfolioID foreign key.
+
+Purpose of the Database:
+The database is designed to:
+
+Support Personalized Financial Planning:
+Define client-specific financial goals.
+Create portfolios tailored to risk levels and financial objectives.
+Perform Risk Assessments:
+Use risk metrics to evaluate asset performance and portfolio suitability.
+Track Historical Performance:
+Store and compare predicted vs. actual portfolio values for analytics.
+Provide AI-Driven Insights:
+Enable integration with Generative AI models for data-driven financial recommendations.

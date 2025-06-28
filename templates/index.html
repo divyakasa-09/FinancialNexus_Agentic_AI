@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .chat-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .user-message {
+            background-color: #e0f7fa;
+            align-self: flex-end;
+        }
+
+        .bot-message {
+            background-color: #f1f8e9;
+            align-self: flex-start;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Chat with the AI</h1>
+        <div id="chat-box" class="chat-box"></div>
+        <input id="user-input" type="text" placeholder="Type your message here...">
+        <button id="send-button">Send</button>
+    </div>
+
+    <script>
+        const apiUrl = "http://localhost:7001/conversation/";
+
+        const chatBox = document.getElementById("chat-box");
+        const userInput = document.getElementById("user-input");
+        const sendButton = document.getElementById("send-button");
+
+        // Generate a unique user ID for this session
+        const userId = Date.now() + Math.random().toString(36).substr(2, 9);
+
+        // Append message to chat box
+        function appendMessage(message, sender) {
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("message", sender === "user" ? "user-message" : "bot-message");
+            messageElement.innerText = message;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+        }
+
+        // Send message to the chatbot API
+        async function sendMessage() {
+            const userMessage = userInput.value.trim();
+            if (!userMessage) return;
+
+            appendMessage(userMessage, "user"); // Add user message to chat box
+            userInput.value = ""; // Clear input field
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ user_id: userId, input: userMessage })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch response from API");
+                }
+
+                const data = await response.json();
+                const botResponse = data.response?.output || "I'm sorry, I couldn't process that.";
+                appendMessage(botResponse, "bot");
+            } catch (error) {
+                appendMessage("An error occurred while connecting to the server. Please try again.", "bot");
+                console.error(error);
+            }
+        }
+
+        // Attach event listeners
+        sendButton.addEventListener("click", sendMessage);
+        userInput.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
